@@ -26,6 +26,17 @@ namespace WebApp.NET5.OpenAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Allow CORS: Access-Control-Allow-Origin
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "WebAssemblyPolicy",
+                    builder =>
+                    {
+                        builder.WithOrigins("https://localhost:44320",
+                            "https://localhost:5001")
+                        .WithMethods("GET", "POST", "DELETE", "PUT");
+                    });
+            });
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -47,6 +58,8 @@ namespace WebApp.NET5.OpenAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("WebAssemblyPolicy");
 
             app.UseAuthorization();
 
